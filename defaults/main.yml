@@ -1,0 +1,4 @@
+---
+
+tls_path: /etc/pki/tls
+keystore_file: "{{ keystore_path }}/identity.jks"

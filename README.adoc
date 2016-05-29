@@ -1,0 +1,33 @@
+Role Name
+=========
+
+A small role to create identity keystores for WebLogic installs (mostly).
+
+Requirements
+------------
+
+This presumes the private key and signed certs are under /etc/pki/tls, /private and /certs respectively.
+
+
+Example Playbook
+----------------
+
+----
+[source,yaml]
+
+- hosts: admin
+  become: yes
+  become_user: root
+  roles:
+    - role: staylorx.keystore
+      keystore_owner: oracle
+      keystore_group: oinstall
+      keystore_path: /home/oracle/certs
+
+----
+
+License
+-------
+
+BSD, MIT
+
