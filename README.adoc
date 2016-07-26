@@ -12,8 +12,8 @@ This presumes the private key and signed certs are under /etc/pki/tls, /private 
 Example Playbook
 ----------------
 
-----
 [source,yaml]
+----
 
 - hosts: admin
   become: yes
