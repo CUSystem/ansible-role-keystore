@@ -38,7 +38,7 @@
   file: path="{{ tls_path }}/misc/identity.jks" state=absent
 
 - name: convert p12 to jks
-  command: /usr/java/latest/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/identity.jks -srckeystore {{ tls_path }}/misc/identity.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ ansible_fqdn }} -noprompt
+  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/identity.jks -srckeystore {{ tls_path }}/misc/identity.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ ansible_fqdn }} -noprompt"
 
 - name: create/assert the path
   file: path="{{ keystore_path }}" state=directory owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0700
