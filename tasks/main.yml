@@ -32,7 +32,7 @@
     - uis-bundle-reverse.crt
 
 - name: create p12 keystore file
-  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/identity.p12" -CAfile /tmp/uis-bundle.crt -name {{ ansible_fqdn }} -passout pass:{{ keystore_password }}
+  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/identity.p12" -CAfile "{{ tls_path }}/misc/uis-bundle.crt" -name {{ ansible_fqdn }} -passout pass:{{ keystore_password }}
 
 - name: ensure the JKS is missing to the convert doesn't complain
   file: path="{{ tls_path }}/misc/identity.jks" state=absent
