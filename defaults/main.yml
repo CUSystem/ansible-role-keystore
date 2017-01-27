@@ -1,5 +1,7 @@
 ---
 
+oracle_base: /opt/oracle
 tls_path: /etc/pki/tls
 keystore_file: "{{ keystore_path }}/identity.jks"
 java_home: /usr/java/default
+keystore_path: "{{ oracle_base }}/certs"
