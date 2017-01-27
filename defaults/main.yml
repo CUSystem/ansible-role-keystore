@@ -1,7 +1,12 @@
 ---
 
-oracle_base: /opt/oracle
+keystore_owner: oracle
+keystore_group: oinstall
+
 tls_path: /etc/pki/tls
-keystore_file: "{{ keystore_path }}/identity.jks"
-java_home: /usr/java/default
+
+oracle_base: /opt/oracle
 keystore_path: "{{ oracle_base }}/certs"
+keystore_file: "{{ keystore_path }}/identity.jks"
+
+java_home: /usr/java/default
