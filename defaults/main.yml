@@ -2,6 +2,7 @@
 
 keystore_owner: oracle
 keystore_group: oinstall
+keystore_password: changeit
 
 tls_path: /etc/pki/tls
 
