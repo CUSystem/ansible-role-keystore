@@ -6,8 +6,8 @@ keystore_password: changeit
 
 tls_path: /etc/pki/tls
 
-oracle_base: /opt/oracle
-keystore_path: "{{ oracle_base }}/certs"
+domain_base: /home/oracle
+keystore_path: "{{ domain_base }}/certs"
 keystore_file: "{{ keystore_path }}/identity.jks"
 
 java_home: /usr/java/default
