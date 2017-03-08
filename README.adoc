@@ -7,7 +7,7 @@ Requirements
 ------------
 
 This presumes the private key and signed certs are under /etc/pki/tls, /private and /certs respectively.
-
+p12 and jks files will be dropped under /etc/pki/tls/misc
 
 Example Playbook
 ----------------
@@ -20,9 +20,12 @@ Example Playbook
   become_user: root
   roles:
     - role: staylorx.keystore
+      #If yes will copy the keystore to the below place as owner with the given name.
+      keystore_copy: yes     
       keystore_owner: oracle
       keystore_group: oinstall
       keystore_path: /home/oracle/certs
+      keystore_name: identity
 
 ----
 

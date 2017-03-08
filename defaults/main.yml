@@ -1,13 +1,15 @@
 ---
 
+keystore_copy: false
 keystore_owner: oracle
 keystore_group: oinstall
-keystore_password: changeit
+keystore_password: changeit    #Really. Change it.
 
 tls_path: /etc/pki/tls
 
 domain_base: /home/oracle
 keystore_path: "{{ domain_base }}/certs"
-keystore_file: "{{ keystore_path }}/identity.jks"
+keystore_name: "identity"
+keystore_file: "{{ keystore_path }}/{{ keystore_name }}.jks"
 
 java_home: /usr/java/default

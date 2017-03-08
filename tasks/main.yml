@@ -32,19 +32,22 @@
     - uis-bundle-reverse.crt
 
 - name: create p12 keystore file
-  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/identity.p12" -CAfile "{{ tls_path }}/misc/uis-bundle.crt" -name {{ ansible_fqdn }} -passout pass:{{ keystore_password }}
+  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/{{ ansible_fqdn }}.p12" -CAfile "{{ tls_path }}/misc/uis-bundle.crt" -name {{ ansible_fqdn }} -passout pass:{{ keystore_password }}
 
 - name: ensure the JKS is missing to the convert doesn't complain
-  file: path="{{ tls_path }}/misc/identity.jks" state=absent
+  file: path="{{ tls_path }}/misc/{{ ansible_fqdn }}.jks" state=absent
 
 - name: convert p12 to jks
-  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/identity.jks -srckeystore {{ tls_path }}/misc/identity.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ ansible_fqdn }} -noprompt"
+  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ ansible_fqdn }}.jks -srckeystore {{ tls_path }}/misc/{{ ansible_fqdn }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ ansible_fqdn }} -noprompt"
 
 - name: create/assert the path
   file: path="{{ keystore_path }}" state=directory owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0700
+  when: "{{ keystore_copy }} == True"
 
-- name: move the keystore to the /home/oracle folder
-  command: mv {{ tls_path }}/misc/identity.jks {{ keystore_file }} warn=no
+- name: copy the keystore to the {{ keystore_path }} folder
+  command: cp {{ tls_path }}/misc/{{ ansible_fqdn }}.jks {{ keystore_file }} warn=no
+  when: "{{ keystore_copy }} == True"
 
 - name: change ownership and permissions
   file: path="{{ keystore_file }}" owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0600
+  when: "{{ keystore_copy }} == True"
