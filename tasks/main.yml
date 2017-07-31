@@ -12,11 +12,11 @@
 
 - name: stop if the TLS key hasn't been cut for this machine
   fail: msg="Cannot find the private key for this machine."
-  when: "{{ does_private_key_exist.stat.exists }} == False"
+  when: not does_private_key_exist.stat.exists
 
 - name: stop if the TLS cert hasn't been cut for this machine
   fail: msg="Cannot find the public cert for this machine."
-  when: "{{ does_public_cert_exist.stat.exists }} == False"
+  when: not does_public_cert_exist.stat.exists
 
 #####
 ##### You need the root and intermediates for the chain here.
@@ -42,12 +42,12 @@
 
 - name: create/assert the path
   file: path="{{ keystore_path }}" state=directory owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0700
-  when: "{{ keystore_copy }} == True"
+  when: keystore_copy
 
 - name: copy the keystore to the {{ keystore_path }} folder
   command: cp {{ tls_path }}/misc/{{ ansible_fqdn }}.jks {{ keystore_file }} warn=no
-  when: "{{ keystore_copy }} == True"
+  when: keystore_copy
 
 - name: change ownership and permissions
   file: path="{{ keystore_file }}" owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0600
-  when: "{{ keystore_copy }} == True"
+  when: keystore_copy
