@@ -20,6 +20,8 @@ Example Playbook
   become_user: root
   roles:
     - role: staylorx.keystore
+      #Will create a forward and reverse chained cert if the bundles are in place
+      prepare_bundle_certs: yes
       #If yes will copy the keystore to the below place as owner with the given name.
       keystore_copy: yes     
       keystore_owner: oracle

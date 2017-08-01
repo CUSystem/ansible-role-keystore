@@ -1,0 +1,20 @@
+---
+
+#
+## Create the chained certs from the internediate bundles
+#
+
+- name: tempate over a helper
+  template:
+    src: templates/create_chained_certs.sh.j2
+    dest: /tmp/create_chained_certs.sh
+    mode: 0700
+
+- name: create the chain certs
+  command: "/tmp/create_chained_certs.sh"
+
+- name: tidy up
+  file:
+    path: /tmp/create_chained_certs.sh
+    state: absent
+

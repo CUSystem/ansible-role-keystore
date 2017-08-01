@@ -13,3 +13,9 @@ keystore_name: "identity"
 keystore_file: "{{ keystore_path }}/{{ keystore_name }}.jks"
 
 java_home: /usr/java/default
+
+forward_bundle_certs: "{{ tls_path }}/misc/forward-bundle-certs.crt"
+reverse_bundle_certs: "{{ tls_path }}/misc/reverse-bundle-certs.crt"
+forward_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_forward_chain.crt"
+reverse_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_reverse_chain.crt"
+

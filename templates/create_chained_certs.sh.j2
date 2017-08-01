@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+#More or less a hard way to do this but effective and fast.
+
+cat {{ tls_path }}/certs/{{ inventory_hostname }}.crt <(echo) {{ forward_bundle_certs }} > {{ forward_chained_cert }}
+
+cat {{ tls_path }}/certs/{{ inventory_hostname }}.crt <(echo) {{ reverse_bundle_certs }} > {{ reverse_chained_cert }}
+
+exit

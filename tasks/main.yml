@@ -10,6 +10,20 @@
 - stat: path={{ public_cert_file }}
   register: does_public_cert_exist
 
+- stat: path={{ forward_bundle_certs }}
+  register: does_forward_bundle_certs_exist
+
+- stat: path={{ reverse_bundle_certs }}
+  register: does_reverse_bundle_certs_exist
+
+- stat: path={{ reverse_bundle_certs }}
+  register: does_reverse_bundle_certs_exist
+
+- name: check if keytool installed
+  shell: command -v {{ java_home }}/bin/keytool >/dev/null 2>&1
+  register: is_keytool_exist
+  ignore_errors: yes
+
 - name: stop if the TLS key hasn't been cut for this machine
   fail: msg="Cannot find the private key for this machine."
   when: not does_private_key_exist.stat.exists
@@ -18,36 +32,20 @@
   fail: msg="Cannot find the public cert for this machine."
   when: not does_public_cert_exist.stat.exists
 
-#####
-##### You need the root and intermediates for the chain here.
-##### My bundle is saved under the /files folder of the Ansible project and I copy it here.
-#####
-- name: copy chain bundles
-  copy: 
-    src:  files/{{ item }} 
-    dest: "{{ tls_path }}/misc/{{ item }}"
-    mode: 0444
-  with_items:
-    - uis-bundle.crt
-    - uis-bundle-reverse.crt
+- name: stop if no bundle certs exist
+  fail: msg="Cannot find the forward bundle certs for this machine."
+  when: not does_forward_bundle_certs_exist.stat.exists
+
+- name: stop if no bundle certs exist
+  fail: msg="Cannot find the revere bundle certs for this machine."
+  when: (include_bundle_certs is defined and include_bundle_certs) and not does_reverse_bundle_certs_exist.stat.exists
+
+- include: create_chains.yml
+  when: prepare_bundle_certs is defined and prepare_bundle_certs
 
 - name: create p12 keystore file
-  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/{{ ansible_fqdn }}.p12" -CAfile "{{ tls_path }}/misc/uis-bundle.crt" -name {{ ansible_fqdn }} -passout pass:{{ keystore_password }}
+  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/{{ inventory_hostname }}.p12" -CAfile "{{ forward_bundle_certs }}" -name {{ inventory_hostname }} -passout pass:{{ keystore_password }}
 
-- name: ensure the JKS is missing to the convert doesn't complain
-  file: path="{{ tls_path }}/misc/{{ ansible_fqdn }}.jks" state=absent
+- include: create_jks.yml
+  when: is_keytool_exist.rc == 0
 
-- name: convert p12 to jks
-  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ ansible_fqdn }}.jks -srckeystore {{ tls_path }}/misc/{{ ansible_fqdn }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ ansible_fqdn }} -noprompt"
-
-- name: create/assert the path
-  file: path="{{ keystore_path }}" state=directory owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0700
-  when: keystore_copy
-
-- name: copy the keystore to the {{ keystore_path }} folder
-  command: cp {{ tls_path }}/misc/{{ ansible_fqdn }}.jks {{ keystore_file }} warn=no
-  when: keystore_copy
-
-- name: change ownership and permissions
-  file: path="{{ keystore_file }}" owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0600
-  when: keystore_copy
