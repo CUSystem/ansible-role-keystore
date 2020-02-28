@@ -1,4 +1,4 @@
 ---
 
-private_key_file: "{{ tls_path }}/private/{{ ansible_fqdn }}.key"
-public_cert_file: "{{ tls_path }}/certs/{{ ansible_fqdn }}.crt"
+private_key_file: "{{ tls_path }}/private/{{ ansible_nodename }}.key"
+public_cert_file: "{{ tls_path }}/certs/{{ ansible_nodename }}.crt"
