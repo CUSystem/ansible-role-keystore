@@ -25,19 +25,19 @@
   ignore_errors: yes
 
 - name: stop if the TLS key hasn't been cut for this machine
-  fail: msg="Cannot find the private key for this machine."
+  fail: msg="Cannot find the private key for this machine: {{ private_key_file }} "
   when: not does_private_key_exist.stat.exists
 
 - name: stop if the TLS cert hasn't been cut for this machine
-  fail: msg="Cannot find the public cert for this machine."
+  fail: msg="Cannot find the public cert for this machine: {{ public_cert_file }}"
   when: not does_public_cert_exist.stat.exists
 
 - name: stop if no bundle certs exist
-  fail: msg="Cannot find the forward bundle certs for this machine."
+  fail: msg="Cannot find the forward bundle certs for this machine: {{ forward_bundle_certs }}"
   when: not does_forward_bundle_certs_exist.stat.exists
 
 - name: stop if no bundle certs exist
-  fail: msg="Cannot find the revere bundle certs for this machine."
+  fail: msg="Cannot find the reverse bundle certs for this machine: {{ reverse_bundle_certs }} "
   when: (include_bundle_certs is defined and include_bundle_certs) and not does_reverse_bundle_certs_exist.stat.exists
 
 - include: create_chains.yml
