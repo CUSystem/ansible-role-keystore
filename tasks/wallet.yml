@@ -1,0 +1,46 @@
+---
+
+#
+# create the wallet containing cert/key/ca-cert for httpd weblogic proxy module
+#
+
+- name: check if orapoki installed
+  stat:
+    path: "{{ orapki }}"
+  register: wlmodule
+
+- name: delete old wallet
+  file:
+    path: "{{ wallet }}"
+    state: absent
+  when: wlmodule.stat.exists
+
+- name: create wallet
+  command: "{{ orapki }} wallet create -wallet {{ wallet }} -auto_login -pwd {{ keystore_password }}"
+  environment:
+        JAVA_HOME: "{{ java_home }}"
+  when: wlmodule.stat.exists
+
+- name: import keystore file (identity.jks) to wallet
+  command: "{{ orapki }} wallet jks_to_pkcs12 -wallet {{ wallet }} -pwd {{ keystore_password }} -keystore {{ keystore_file }} -jkspwd {{ keystore_password }}"
+  environment:
+        JAVA_HOME: "{{ java_home }}"
+  when: wlmodule.stat.exists
+
+- name:
+  file:
+    path: "{{ wallet }}"
+    state: "directory"
+    owner: "{{ keystore_owner }}"
+    group: "{{ keystore_group }}"
+    mode: 0600
+
+- name: display the contents of the wallet for confirmation
+  command: "{{ orapki }} wallet display -wallet {{ wallet }} -complete"
+  environment:
+        JAVA_HOME: "{{ java_home }}"
+  when: wlmodule.stat.exists
+  notify:
+    - restart httpd
+
+

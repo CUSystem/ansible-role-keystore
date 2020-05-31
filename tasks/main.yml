@@ -49,3 +49,6 @@
 - include: create_jks.yml
   when: is_keytool_exist.rc == 0
 
+- include: wallet.yml
+  when: is_keytool_exist.rc == 0
+

@@ -3,7 +3,8 @@
 keystore_copy: false
 keystore_owner: oracle
 keystore_group: oinstall
-keystore_password: changeit    #Really. Change it.
+# must override this password
+keystore_password: "3Q0476Tn"
 
 tls_path: /etc/pki/tls
 
@@ -12,6 +13,10 @@ keystore_path: "{{ domain_base }}/certs"
 keystore_name: "identity"
 keystore_file: "{{ keystore_path }}/{{ keystore_name }}.jks"
 
+orapki: "{{ oracle_base }}/middleware/oracle_common/bin/orapki"
+wallet_name: "wallet"
+wallet: "{{ keystore_path }}/{{wallet_name}}"
+
 java_home: /usr/java/default
 
 forward_bundle_certs: "{{ tls_path }}/misc/forward-bundle-certs.crt"
@@ -19,3 +24,5 @@ reverse_bundle_certs: "{{ tls_path }}/misc/reverse-bundle-certs.crt"
 forward_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_forward_chain.crt"
 reverse_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_reverse_chain.crt"
 
+private_key_file: "{{ tls_path }}/private/{{ ansible_nodename }}.key"
+public_cert_file: "{{ tls_path }}/certs/{{ ansible_nodename }}.crt"
