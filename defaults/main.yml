@@ -19,14 +19,13 @@ wallet: "{{ keystore_path }}/{{wallet_name}}"
 
 java_home: /usr/java/default
 
-forward_bundle_certs: "{{ tls_path }}/misc/forward-bundle-certs.crt"
-reverse_bundle_certs: "{{ tls_path }}/misc/reverse-bundle-certs.crt"
-forward_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_forward_chain.crt"
-reverse_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_reverse_chain.crt"
-
 # UIS is transitioning from hostname endpoints to vip endpoints.
 cert_base_name: "{{ use_vip_for_cert | ternary(vip, ansible_nodename, ansible_nodename) }}"
 
+forward_bundle_certs: "{{ tls_path }}/misc/forward-bundle-certs.crt"
+reverse_bundle_certs: "{{ tls_path }}/misc/reverse-bundle-certs.crt"
+forward_chained_cert: "{{ tls_path }}/certs/{{ cert_base_name }}-with_forward_chain.crt"
+reverse_chained_cert: "{{ tls_path }}/certs/{{ cert_base_name }}-with_reverse_chain.crt"
 
 private_key_file: "{{ tls_path }}/private/{{ cert_base_name }}.key"
 public_cert_file: "{{ tls_path }}/certs/{{ cert_base_name }}.crt"

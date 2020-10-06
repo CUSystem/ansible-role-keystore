@@ -1,17 +1,17 @@
 ---
 
 - name: ensure the JKS is missing to the convert doesn't complain
-  file: path="{{ tls_path }}/misc/{{ inventory_hostname }}.jks" state=absent
+  file: path="{{ tls_path }}/misc/{{ cert_base_name }}.jks" state=absent
 
 - name: convert p12 to jks
-  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ inventory_hostname }}.jks -srckeystore {{ tls_path }}/misc/{{ inventory_hostname }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ inventory_hostname }} -noprompt"
+  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ cert_base_name }}.jks -srckeystore {{ tls_path }}/misc/{{ cert_base_name }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ cert_base_name }} -noprompt"
 
 - name: create/assert the path
   file: path="{{ keystore_path }}" state=directory owner="{{ keystore_owner }}" group="{{ keystore_group }}" mode=0700
   when: keystore_copy 
 
 - name: copy the keystore to the {{ keystore_path }} folder
-  command: cp {{ tls_path }}/misc/{{ inventory_hostname }}.jks {{ keystore_file }} warn=no
+  command: cp {{ tls_path }}/misc/{{ cert_base_name }}.jks {{ keystore_file }} warn=no
   when: keystore_copy
 
 - name: change ownership and permissions

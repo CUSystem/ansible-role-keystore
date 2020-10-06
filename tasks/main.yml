@@ -44,7 +44,7 @@
   when: prepare_bundle_certs is defined and prepare_bundle_certs
 
 - name: create p12 keystore file
-  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/{{ inventory_hostname }}.p12" -CAfile "{{ forward_bundle_certs }}" -name {{ inventory_hostname }} -passout pass:{{ keystore_password }}
+  command: openssl pkcs12 -export -chain -in "{{ public_cert_file }}" -inkey "{{ private_key_file }}" -out "{{ tls_path }}/misc/{{ cert_base_name }}.p12" -CAfile "{{ forward_bundle_certs }}" -name {{ cert_base_name }} -passout pass:{{ keystore_password }}
 
 - include: create_jks.yml
   when: is_keytool_exist.rc == 0
