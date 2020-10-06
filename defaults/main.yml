@@ -25,7 +25,7 @@ forward_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_forwar
 reverse_chained_cert: "{{ tls_path }}/certs/{{ inventory_hostname }}-with_reverse_chain.crt"
 
 # UIS is transitioning from hostname endpoints to vip endpoints.
-cert_base_name: "{{ use_vip_for_cert == 'true'|  ternary(vip, ansible_nodename, ansible_nodename) }}"
+cert_base_name: "{{ use_vip_for_cert | ternary(vip, ansible_nodename, ansible_nodename) }}"
 
 
 private_key_file: "{{ tls_path }}/private/{{ cert_base_name }}.key"
