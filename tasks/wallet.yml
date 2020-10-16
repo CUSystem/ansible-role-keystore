@@ -29,7 +29,7 @@
 #  when: wlmodule.stat.exists
 
 - name: import trusted certificate into wallet
-  command: "{{ orapki }} wallet add -wallet {{ wallet }} -trusted_cert -cert {{ public_cert_file }} -pwd {{ keystore_password }}
+  command: "{{ orapki }} wallet add -wallet {{ wallet }} -trusted_cert -cert {{ public_cert_file }} -pwd {{ keystore_password }}"
   environment:
         JAVA_HOME: "{{ java_home }}"
   when: wlmodule.stat.exists
