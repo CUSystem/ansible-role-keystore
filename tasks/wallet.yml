@@ -21,8 +21,15 @@
         JAVA_HOME: "{{ java_home }}"
   when: wlmodule.stat.exists
 
-- name: import keystore file (identity.jks) to wallet
-  command: "{{ orapki }} wallet jks_to_pkcs12 -wallet {{ wallet }} -pwd {{ keystore_password }} -keystore {{ keystore_file }} -jkspwd {{ keystore_password }}"
+# can only import unique certs into a wallet. With an node_keystore_alias this doesn't work
+#- name: import keystore file (identity.jks) to wallet
+#  command: "{{ orapki }} wallet jks_to_pkcs12 -wallet {{ wallet }} -pwd {{ keystore_password }} -keystore {{ keystore_file }} -jkspwd {{ keystore_password }}"
+#  environment:
+#        JAVA_HOME: "{{ java_home }}"
+#  when: wlmodule.stat.exists
+
+- name: import trusted certificate into wallet
+  command: "{{ orapki }} wallet add -wallet {{ wallet }} -trusted_cert -cert {{ public_cert_file }} -pwd {{ keystore_password }}
   environment:
         JAVA_HOME: "{{ java_home }}"
   when: wlmodule.stat.exists
