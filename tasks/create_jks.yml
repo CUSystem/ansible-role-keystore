@@ -6,8 +6,8 @@
 - name: convert p12 to jks
   command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ cert_base_name }}.jks -srckeystore {{ tls_path }}/misc/{{ cert_base_name }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ cert_base_name }} -noprompt"
 
-- name: alternate keystore if weblogic nodemanage etc using CustomIdentityAlias=node name instead of vip
-  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ node_keystore_alias }}.jks -srckeystore {{ tls_path }}/misc/{{ node_keystore_alias }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ node_keystore_alias }} -noprompt"
+- name: alternate alias if weblogic nodemanager.properties using CustomIdentityAlias=node name instead of vip
+  command: "{{ java_home }}/bin/keytool -importkeystore -deststorepass {{ keystore_password }} -destkeystore {{ tls_path }}/misc/{{ cert_base_name }}.jks -srckeystore {{ tls_path }}/misc/{{ node_keystore_alias }}.p12 -srcstoretype PKCS12 -srcstorepass {{ keystore_password }} -alias {{ node_keystore_alias }} -noprompt"
   when: not cert_base_name == node_keystore_alias
 
 - name: create/assert the path
