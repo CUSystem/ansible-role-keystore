@@ -20,8 +20,12 @@ wallet: "{{ keystore_path }}/{{wallet_name}}"
 java_home: /usr/java/default
 
 # UIS is transitioning from hostname endpoints to vip endpoints.
-# Add cert to keystore under two aliases: the vip and the node, since WL may be configured to use the node alias
-cert_base_name: "{{ use_vip_for_cert | ternary(vip, ansible_nodename, ansible_nodename) }}"
+# vip and use_vip_for_cert are optional variables
+keystore_vip: "{{vip | default('vip_is_undefined') }}"
+keystore_use_vip_for_cert: "{{ use_vip_for_cert | default('false') }}"
+cert_base_name: "{{ (keystore_use_vip_for_cert == 'true') | ternary(keystore_vip, ansible_nodename, ansible_nodename) }}"
+
+
 node_keystore_alias: "{{ ansible_nodename }}"
 
 forward_bundle_certs: "{{ tls_path }}/misc/forward-bundle-certs.crt"
